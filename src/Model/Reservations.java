@@ -5,18 +5,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
-public class Reservation {
+public class Reservations {
 
     private int id;
     private String note;
-    private static List<Reservation> reservationList;
+    private static List<Reservations> reservationList;
     private static Scanner scanner = Program.getScannerInstance();
 
     static {
         reservationList = new ArrayList<>();
     }
 
-    public Reservation(int id, String note) {
+    public Reservations(int id, String note) {
         this.id = id;
         this.note = note;
     }
@@ -38,7 +38,7 @@ public class Reservation {
             System.out.println("No reservations found!");
         } else {
             System.out.println("Found: " + reservationList.size());
-            for (Reservation r : reservationList)
+            for (Reservations r : reservationList)
                 System.out.println(r.id + ". " + r.note);
         }
         return 0;
@@ -63,7 +63,7 @@ public class Reservation {
             if (Hotel.checkHotelId(hotelRoomId, hotelRooms) && !Hotel.checkIfAlreadyReservedRoom(hotelRooms.get(hotelRoomId - 1)))
                 break;
 
-            System.out.println("Model.Hotel room doesn't exist, or already reserved!");
+            System.out.println("Hotel room doesn't exist, or already reserved!");
         }
 
         Program.clearInputBuffer(scanner);
@@ -74,7 +74,7 @@ public class Reservation {
         } while (userNote.isEmpty());
 
         int newId = reservationList.isEmpty() ? 1 : reservationList.getLast().id + 1;
-        reservationList.add(new Reservation(newId, userNote));
+        reservationList.add(new Reservations(newId, userNote));
 
         System.out.println("Created! " + reservationList.getLast().id + ". " + reservationList.getLast().note);
 
@@ -83,7 +83,7 @@ public class Reservation {
 
     public static int update() {
         int reservationId;
-        Reservation reservation;
+        Reservations reservation;
 
         while (true) {
             System.out.println(" Type reservation id: ");
@@ -99,7 +99,7 @@ public class Reservation {
             Program.clearInputBuffer(scanner);
 
             if (reservationId == 0) return 0;
-            if (Reservation.checkReservationId(reservationId, reservationList)) {
+            if (Reservations.checkReservationId(reservationId, reservationList)) {
                 reservation = reservationList.get(reservationId - 1);
                 System.out.println("Change reservation Note " + reservation.id + ". Note: " + reservation.note);
 
@@ -115,7 +115,7 @@ public class Reservation {
     public static int delete() {
         int reservationId;
         String userConfirmation;
-        Reservation reservation;
+        Reservations reservation;
 
         while (true) {
             System.out.println("Select reservation id: ");
@@ -132,7 +132,7 @@ public class Reservation {
             Program.clearInputBuffer(scanner);
 
             if (reservationId == 0) return 0;
-            if (Reservation.checkReservationId(reservationId, reservationList)) {
+            if (Reservations.checkReservationId(reservationId, reservationList)) {
                 reservation = reservationList.get(reservationId-1);
                 do {
                     System.out.println(reservation.id + ". Note: " + reservation.note);
@@ -150,8 +150,8 @@ public class Reservation {
         return 0;
     }
 
-    public static boolean checkReservationId(int id, List<Reservation> reservationList) {
-        for (Reservation n : reservationList)
+    public static boolean checkReservationId(int id, List<Reservations> reservationList) {
+        for (Reservations n : reservationList)
             if (n.id == id)
                 return true;
         return false;

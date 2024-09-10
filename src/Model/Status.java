@@ -1,10 +1,10 @@
 package Model;
 
-public class Amenity {
+public class Status {
     private int id;
     private String name;
 
-    public Amenity(int id, String name) {
+    public Status(int id, String name) {
         this.id = id;
         this.name = name;
     }
