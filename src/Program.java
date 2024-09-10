@@ -1,4 +1,4 @@
-package Model;
+import Model.Reservations;
 
 import java.util.HashMap;
 import java.util.Scanner;
@@ -12,10 +12,10 @@ public class Program {
             switch (option) {
                 case 0 -> option = Menu.mainMenu();
                 case 1 -> option = Hotel.getHotelRooms(hotelRooms);
-                case 2 -> option = Reservation.create(hotelRooms);
-                case 3 -> option = Reservation.update();
-                case 4 -> option = Reservation.delete();
-                case 5 -> option = Reservation.getReservations();
+                case 2 -> option = Reservations.create(hotelRooms);
+                case 3 -> option = Reservations.update();
+                case 4 -> option = Reservations.delete();
+                case 5 -> option = Reservations.getReservations();
                 case 6 -> start = exit();
                 default -> option = 0;
             }

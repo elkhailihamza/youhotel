@@ -1,4 +1,4 @@
-package Model;
+import Model.Reservations;
 
 import java.util.HashMap;
 import java.util.Scanner;
@@ -43,7 +43,7 @@ public class Hotel {
         } while (!userConfirmation.equalsIgnoreCase("Y") && !userConfirmation.equalsIgnoreCase("N"));
 
         if (userConfirmation.equalsIgnoreCase("Y"))
-            return Reservation.create(hotelRooms);
+            return Reservations.create(hotelRooms);
         return 0;
     }
 
