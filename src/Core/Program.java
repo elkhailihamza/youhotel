@@ -1,4 +1,6 @@
-import Model.Reservations;
+package Core;
+
+import Models.Reservations;
 
 import java.util.HashMap;
 import java.util.Scanner;

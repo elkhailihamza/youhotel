@@ -1,20 +1,16 @@
-package Model;
+package Models;
 
-public class Amenity {
-    private int id;
+public class Status {
+    private final int id;
     private String name;
 
-    public Amenity(int id, String name) {
+    public Status(int id, String name) {
         this.id = id;
         this.name = name;
     }
 
     public int getId() {
         return this.id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {

@@ -1,3 +1,5 @@
+import Core.Program;
+
 public class Menu {
     public static int mainMenu() {
         System.out.println("Hotel Reservations");

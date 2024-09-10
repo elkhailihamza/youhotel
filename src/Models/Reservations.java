@@ -1,47 +1,61 @@
-package Model;
+package Models;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import Core.Program;
+import java.sql.Date;
+import java.util.*;
 
 public class Reservations {
 
-    private int id;
+    private final long id;
     private String note;
-    private static List<Reservations> reservationList;
-    private static Scanner scanner = Program.getScannerInstance();
+    private Date start_date;
+    private Date end_date;
+    private long room_id;
 
-    static {
-        reservationList = new ArrayList<>();
+    private static final Scanner scanner = Program.getScannerInstance();
+
+    public Reservations(long id, String note, Date start_date, Date end_date, long room_id) {
+        this.id = id;
+        this.start_date = start_date;
+        this.end_date = end_date;
+        this.note = note;
+        this.room_id = room_id;
     }
 
-    public Reservations(int id, String note) {
-        this.id = id;
+    public long getId() {
+        return this.id;
+    }
+
+    public String getNote() {
+        return this.note;
+    }
+
+    public void setNote(String note) {
         this.note = note;
     }
 
-    public void setReservationId(int id) {
-        this.id = id;
+    public Date getStartDate() {
+        return this.start_date;
     }
 
-    public int getReservationId() {
-        return this.id;
+    public void setStartDate(Date start_date) {
+        this.start_date = start_date;
     }
 
-    public int getReservationNote() {
-        return this.id;
+    public Date getEndDate() {
+        return this.start_date;
     }
 
-    public static int getReservations() {
-        if (reservationList.isEmpty()) {
-            System.out.println("No reservations found!");
-        } else {
-            System.out.println("Found: " + reservationList.size());
-            for (Reservations r : reservationList)
-                System.out.println(r.id + ". " + r.note);
-        }
-        return 0;
+    public void setEndDate(Date end_date) {
+        this.end_date = end_date;
+    }
+
+    public long getRoomId() {
+        return this.room_id;
+    }
+
+    public void getRoomId(long room_id) {
+        this.room_id = room_id;
     }
 
     public static int create(HashMap<String, Hotel> hotelRooms) {

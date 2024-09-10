@@ -1,10 +1,10 @@
-package Model;
+package Models;
 
-public class Status {
+public class Category {
     private int id;
     private String name;
 
-    public Status(int id, String name) {
+    public Category(int id, String name) {
         this.id = id;
         this.name = name;
     }

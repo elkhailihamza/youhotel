@@ -1,4 +1,5 @@
-import Model.Reservations;
+import Core.Program;
+import Models.Reservations;
 
 import java.util.HashMap;
 import java.util.Scanner;

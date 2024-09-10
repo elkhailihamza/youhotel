@@ -1,4 +1,5 @@
-import DB.DB_Connection;
+import Core.DB_Connection;
+import Core.Program;
 
 import java.util.HashMap;
 
