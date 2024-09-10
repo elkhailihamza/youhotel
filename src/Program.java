@@ -1,12 +1,13 @@
-import java.util.InputMismatchException;
-import java.util.List;
+package Model;
+
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Program {
 
     private static Scanner scannerInstance;
 
-    public static void start(boolean start, int option, List<Hotel> hotelRooms) {
+    public static void start(boolean start, int option, HashMap<String, Hotel> hotelRooms) {
         while (start) {
             switch (option) {
                 case 0 -> option = Menu.mainMenu();

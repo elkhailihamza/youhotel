@@ -1,10 +1,12 @@
+package Model;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
 public class Reservation {
 
-    private int idHotel;
     private int id;
     private String note;
     private static List<Reservation> reservationList;
@@ -19,6 +21,18 @@ public class Reservation {
         this.note = note;
     }
 
+    public void setReservationId(int id) {
+        this.id = id;
+    }
+
+    public int getReservationId() {
+        return this.id;
+    }
+
+    public int getReservationNote() {
+        return this.id;
+    }
+
     public static int getReservations() {
         if (reservationList.isEmpty()) {
             System.out.println("No reservations found!");
@@ -30,7 +44,7 @@ public class Reservation {
         return 0;
     }
 
-    public static int create(List<Hotel> hotelRooms) {
+    public static int create(HashMap<String, Hotel> hotelRooms) {
         int hotelRoomId;
         String userNote;
 
@@ -49,7 +63,7 @@ public class Reservation {
             if (Hotel.checkHotelId(hotelRoomId, hotelRooms) && !Hotel.checkIfAlreadyReservedRoom(hotelRooms.get(hotelRoomId - 1)))
                 break;
 
-            System.out.println("Hotel room doesn't exist, or already reserved!");
+            System.out.println("Model.Hotel room doesn't exist, or already reserved!");
         }
 
         Program.clearInputBuffer(scanner);
@@ -114,11 +128,12 @@ public class Reservation {
             }
 
             reservationId = scanner.nextInt();
+            System.out.println(reservationId);
             Program.clearInputBuffer(scanner);
 
             if (reservationId == 0) return 0;
             if (Reservation.checkReservationId(reservationId, reservationList)) {
-                reservation = reservationList.get(reservationId);
+                reservation = reservationList.get(reservationId-1);
                 do {
                     System.out.println(reservation.id + ". Note: " + reservation.note);
                     System.out.println(" Are you sure? (y,n)");
@@ -126,10 +141,10 @@ public class Reservation {
                 } while (!userConfirmation.equalsIgnoreCase("Y") && !userConfirmation.equalsIgnoreCase("N"));
 
                 if (userConfirmation.equalsIgnoreCase("Y"))
-                    reservationList.remove(reservationId - 1);
+                    reservationList.remove(reservationId-1);
                 break;
             } else {
-                System.out.println("Reservation doesn't exist!");
+                System.out.println("Model.Reservation doesn't exist!");
             }
         }
         return 0;

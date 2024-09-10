@@ -1,41 +1,36 @@
-import java.util.List;
+package Model;
+
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Hotel {
 
-    public enum Status {
-        Reserved, Empty;
-    }
-
-    private Status status;
+    public Status status;
+    private Category category;
+    private Equipements equipements;
     private int id;
     private String title;
     private double price;
 
-    public Hotel(Status status, int id, String title, double price) {
-        this.status = status;
-        this.id = id;
-        this.title = title;
-        this.price = price;
-    }
 
-    public static int getHotelRooms(List<Hotel> hotelRooms) {
+
+    public static int getHotelRooms(HashMap<String, Hotel> hotelRooms) {
         Scanner scanner = Program.getScannerInstance();
         String userConfirmation;
         boolean emptyRoomsDone = false;
 
         System.out.println();
         System.out.println(" Empty: ");
-        for (Hotel h:hotelRooms) {
+        for (Hotel h:hotelRooms.values()) {
             if (h.status == Status.Empty) {
                 emptyRoomsDone = true;
-                System.out.println(h.id + ". " + h.title + " - " + h.price + "dh . " + h.status);
+                System.out.println(h.id + ". " + h.title + " - " + h.price + " " + h.category + " " + h.equipements + "dh . " + h.status);
             }
         }
 
         System.out.println(" Reserved: ");
         if (emptyRoomsDone) {
-            for (Hotel h : hotelRooms) {
+            for (Hotel h : hotelRooms.values()) {
                 if (h.status == Status.Reserved)
                     System.out.println(h.id + ". " + h.title + " - " + h.price + "dh . " + h.status);
             }
@@ -52,8 +47,8 @@ public class Hotel {
         return 0;
     }
 
-    public static boolean checkHotelId(int id, List<Hotel> hotelRooms) {
-        for (Hotel n : hotelRooms)
+    public static boolean checkHotelId(int id, HashMap<String, Hotel> hotelRooms) {
+        for (Hotel n : hotelRooms.values())
             if (n.id == id)
                 return true;
         return false;
