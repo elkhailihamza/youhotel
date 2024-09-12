@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserRepositoryImpl implements  UserRepository{
+public class UserRepositoryImpl implements UserRepository {
     private final Connection connectionInstance;
 
     public UserRepositoryImpl(Connection connection) {
@@ -15,17 +15,17 @@ public class UserRepositoryImpl implements  UserRepository{
     }
 
     @Override
-    public void addUser(String user_name, String user_pass) {
+    public void addUser(Users user) {
         String sql = "INSERT INTO users (user_name, user_pass) VALUES (?, ?);";
         try (PreparedStatement stmt = connectionInstance.prepareStatement(sql)) {
-            stmt.setString(1, user_name);
-            stmt.setString(2, user_pass);
+            stmt.setString(1, user.getUserName());
+            stmt.setString(2, user.getUserPass());
             int result = stmt.executeUpdate();
-            if (result>0)
-                System.out.println("User "+user_name+" Successfully Created!");
+            if (result > 0)
+                System.out.println("User " + user.getUserName() + " Successfully Created!");
 
         } catch (SQLException e) {
-            System.out.println("User err: "+e);
+            System.out.println("User err: " + e);
         }
     }
 
@@ -36,26 +36,31 @@ public class UserRepositoryImpl implements  UserRepository{
         try (PreparedStatement stmt = connectionInstance.prepareStatement(sql)) {
             stmt.setLong(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
-                user = this.setResultsToUser(rs);
+                if (rs.next())
+                    user = this.setResultsToUser(rs);
             }
         } catch (SQLException e) {
-            System.out.println("User err: "+e);
+            System.out.println("User err: " + e);
         }
         return user;
     }
 
     @Override
     public Users getUserByUserName(String user_name) {
-        String sql = "SELECT users.user_name, users.user_name, users.user_pass FROM users WHERE users.user_name = ?;";
+        String sql = "SELECT users.user_id, users.user_name, users.user_pass FROM users WHERE users.user_name = ?;";
         Users user = null;
         try (PreparedStatement stmt = connectionInstance.prepareStatement(sql)) {
             stmt.setString(1, user_name);
             try (ResultSet rs = stmt.executeQuery()) {
-                user = this.setResultsToUser(rs);
+                if (rs.next())
+                    user = this.setResultsToUser(rs);
             }
         } catch (SQLException e) {
-            System.out.println("User err: "+e);
+            System.out.println("User err: " + e);
         }
+        System.out.println(user.getUserId());
+        System.out.println(user.getUserName());
+        System.out.println(user.getUserPass());
         return user;
     }
 
