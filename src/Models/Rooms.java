@@ -1,23 +1,23 @@
 package Models;
 
-import java.util.List;
-
 public class Rooms {
 
     private final Long id;
     private String roomNumber;
     private double price;
     private long status_id;
+    private String status_name;
     private long category_id;
-    private List<Amenity> amenities;
+    private String category_name;
 
-    public Rooms(Long id, String roomNumber, double price, long status, long category, List<Amenity> amenities) {
+    public Rooms(Long id, String roomNumber, double price, long status_id, String status_name, long category_id, String category_name) {
         this.id = id;
         this.roomNumber = roomNumber;
         this.price = price;
-        this.status_id = status;
-        this.category_id = category;
-        this.amenities = amenities;
+        this.status_id = status_id;
+        this.status_name = status_name;
+        this.category_id = category_id;
+        this.category_name = category_name;
     }
 
     public Long getId() {
@@ -40,28 +40,36 @@ public class Rooms {
         this.price = price;
     }
 
-    public long getCategory() {
+    public long getCategoryId() {
         return this.category_id;
     }
 
-    public void setCategory(long category_id) {
+    public void setCategoryId(long category_id) {
         this.category_id = category_id;
     }
 
-    public long getStatus() {
+    public String getCategoryName() {
+        return this.category_name;
+    }
+
+    public void setCategoryName(String category_name) {
+        this.category_name = category_name;
+    }
+
+    public long getStatusId() {
         return this.status_id;
     }
 
-    public void setStatus(long status_id) {
+    public void setStatusId(long status_id) {
         this.status_id = status_id;
     }
 
-    public List<Amenity> getAmenities() {
-        return this.amenities;
+    public String getStatusName() {
+        return this.status_name;
     }
 
-    public void setAmenities(List<Amenity> amenities) {
-        this.amenities = amenities;
+    public void setStatusName(String status_name) {
+        this.status_name = status_name;
     }
 }
 

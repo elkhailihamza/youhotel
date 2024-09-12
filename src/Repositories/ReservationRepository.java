@@ -5,9 +5,9 @@ import Models.Reservations;
 import java.util.List;
 
 public interface ReservationRepository {
-    Reservations findById(int id);
+    Reservations findById(long id);
     List<Reservations> fetchAll();
     void addReservation(Reservations reservation);
     void updateReservation(Reservations reservation);
-    void deleteReservation(int id);
+    void deleteReservation(long id);
 }

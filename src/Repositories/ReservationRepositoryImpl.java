@@ -1,6 +1,5 @@
 package Repositories;
 
-import Core.DB_Connection;
 import Models.Reservations;
 
 import java.sql.*;
@@ -11,23 +10,34 @@ public class ReservationRepositoryImpl implements ReservationRepository {
     private final Connection connectionInstance;
 
     public ReservationRepositoryImpl(Connection connection) {
-        this.connectionInstance = DB_Connection.getConnection();
+        this.connectionInstance = connection;
+    }
+
+    private void setResultsToReservation(PreparedStatement stmt, Reservations reservation) throws SQLException {
+        stmt.setString(1, reservation.getNote());
+        stmt.setDate(2, new java.sql.Date(reservation.getStartDate().getTime()));
+        stmt.setDate(3, new java.sql.Date(reservation.getEndDate().getTime()));
+        stmt.setLong(4, reservation.getRoomId());
+    }
+
+    private Reservations insertResultsIntoReservation(ResultSet rs) throws SQLException {
+        long reservation_id = rs.getLong("reservation_id");
+        String reservation_note = rs.getString("reservation_note");
+        Date reservation_start_date = rs.getDate("reservation_start_date");
+        Date reservation_end_date = rs.getDate("reservation_end_date");
+        long room_id = rs.getLong("room_id");
+        return new Reservations(reservation_id, reservation_note, reservation_start_date, reservation_end_date, room_id);
     }
 
     @Override
-    public Reservations findById(int id) {
+    public Reservations findById(long id) {
         String sql = "SELECT * FROM reservations WHERE rooms.room_id = ?;";
         Reservations reservation = null;
         try (PreparedStatement stmt = connectionInstance.prepareStatement(sql)) {
             stmt.setLong(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    long reservation_id = rs.getLong("reservation_id");
-                    String reservation_note = rs.getString("reservation_note");
-                    Date reservation_start_date = rs.getDate("reservation_start_date");
-                    Date reservation_end_date = rs.getDate("reservation_end_date");
-                    long room_id = rs.getLong("room_id");
-                    reservation = new Reservations(reservation_id, reservation_note, reservation_start_date, reservation_end_date, room_id);
+                    reservation = insertResultsIntoReservation(rs);
                 }
             }
         } catch (SQLException e) {
@@ -44,13 +54,8 @@ public class ReservationRepositoryImpl implements ReservationRepository {
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()) {
-                long reservation_id = rs.getLong("reservation_id");
-                String reservation_note = rs.getString("reservation_note");
-                Date reservation_start_date = rs.getDate("reservation_start_date");
-                Date reservation_end_date = rs.getDate("reservation_end_date");
-                long room_id = rs.getLong("room_id");
-
-                reservations.add(new Reservations(reservation_id, reservation_note, reservation_start_date, reservation_end_date, room_id));
+                Reservations reservation = insertResultsIntoReservation(rs);
+                reservations.add(reservation);
             }
         } catch (SQLException e) {
             System.out.println("Connection err: " + e);
@@ -60,14 +65,10 @@ public class ReservationRepositoryImpl implements ReservationRepository {
 
     @Override
     public void addReservation(Reservations reservation) {
-        String sql = "INSERT INTO reservations (note, start_date, end_date, room_id) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO reservations (reservation_note, reservation_start_date, reservation_end_date, room_id) VALUES (?, ?, ?, ?);";
 
         try(PreparedStatement stmt = connectionInstance.prepareStatement(sql)) {
-            stmt.setString(1, reservation.getNote());
-            stmt.setDate(2, reservation.getStartDate());
-            stmt.setDate(3, reservation.getEndDate());
-            stmt.setLong(4, reservation.getRoomId());
-
+            this.setResultsToReservation(stmt, reservation);
             int result = stmt.executeUpdate();
             if (result > 0)
                 System.out.println("Reservation Inserted Successfully!");
@@ -77,12 +78,32 @@ public class ReservationRepositoryImpl implements ReservationRepository {
     }
 
     @Override
-    public void updateReservation(Reservations reservations) {
-
+    public void updateReservation(Reservations reservation) {
+        try {
+            String sql = "UPDATE reservations SET reservation_note = ?, reservation_start_date = ?, reservation_end_date = ?, room_id = ?;";
+            try (PreparedStatement stmt = connectionInstance.prepareStatement(sql)) {
+                this.setResultsToReservation(stmt, reservation);
+                int rowUpdated = stmt.executeUpdate();
+                if (rowUpdated > 0)
+                    System.out.println(reservation.getNote()+" has been updated!");
+            }
+        } catch(SQLException e) {
+            System.out.println("Connection err: "+e);
+        }
     }
 
     @Override
-    public void deleteReservation(int id) {
-
+    public void deleteReservation(long id) {
+        try {
+            String sql = "DELETE FROM ONLY ( reservations ) WHERE reservations.reservations.id = ?;";
+            try (PreparedStatement stmt = connectionInstance.prepareStatement(sql)) {
+                stmt.setLong(1, id);
+                int rowUpdated = stmt.executeUpdate();
+                if (rowUpdated>0)
+                    System.out.println("Successfully deleted reservation with id: "+id);
+            }
+        } catch (SQLException e) {
+            System.out.println("Connection err: "+e);
+        }
     }
 }

@@ -1,3 +1,5 @@
+package Views;
+
 import Core.Program;
 
 public class Menu {
@@ -7,7 +9,7 @@ public class Menu {
         System.out.println("2. Reserve a hotel room");
         System.out.println("3. Edit past reservations");
         System.out.println("4. Cancel a reservation");
-        System.out.println("5. View Model.Reservation History");
+        System.out.println("5. View Reservation History");
         System.out.println("6. Quit");
 
         int userInput;

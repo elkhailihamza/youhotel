@@ -5,6 +5,7 @@ import Models.Rooms;
 import Repositories.ReservationRepository;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ReservationService {
     private final ReservationRepository ReservationRepository;
@@ -12,7 +13,7 @@ public class ReservationService {
         this.ReservationRepository = ReservationRepository;
     }
 
-    public Reservations findById(int id) {
+    public Reservations findById(long id) {
         return ReservationRepository.findById(id);
     }
 
@@ -20,15 +21,20 @@ public class ReservationService {
         return ReservationRepository.fetchAll();
     }
 
-    public void addRoom(Rooms room) {
-
+    public void addReservation(Reservations reservation) {
+        ReservationRepository.addReservation(reservation);
     }
 
-    public void updateRoom(Rooms room) {
-
+    public void updateReservation(Reservations reservation) {
+        ReservationRepository.updateReservation(reservation);
     }
 
-    public void deleteRoom(int id) {
+    public void deleteRoom(long id) {
+        ReservationRepository.deleteReservation(id);
+    }
 
+    public boolean checkIfExists(long id) {
+        Reservations reservation = this.findById(id);
+        return Objects.equals(reservation, null);
     }
 }

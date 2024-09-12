@@ -1,19 +1,30 @@
-import Core.DB_Connection;
+import Controllers.ReservationController;
+import Controllers.RoomController;
 import Core.Program;
-
-import java.util.HashMap;
+import Core.Repository;
+import Views.Menu;
 
 public class Main {
     public static void main(String[] args) {
         boolean start = true;
         int option = 0;
-        HashMap<String, Hotel> hotelRooms = new HashMap<>();
-        hotelRooms.put("hotel1", new Hotel(Hotel.Category.DELUXE, Hotel.Status.Reserved, 1, Hotel.Equipements.Climatisation,12.12));
-        hotelRooms.put("hotel2", new Hotel(Hotel.Category.STANDARD, Hotel.Status.Empty,2, Hotel.Equipements.Climatisation, 20.1));
-        hotelRooms.put("hotel3", new Hotel(Hotel.Category.STANDARD, Hotel.Status.Empty, 3, Hotel.Equipements.Climatisation, 102.2));
 
-        DB_Connection connection = new DB_Connection();
-        connection.getConnection();
-        Program.start(start, option, hotelRooms);
+        Repository repository = new Repository();
+        ReservationController reservationController = new ReservationController(repository);
+        RoomController roomController = new RoomController(repository);
+
+        while (start) {
+            switch (option) {
+                case 0 -> option = Menu.mainMenu();
+                case 1 -> option = roomController.showAll();
+                case 2 -> option = reservationController.addReservation();
+                // case 3 -> option = reservationController.update();
+                // case 4 -> option = reservationController.delete();
+                case 5 -> option = reservationController.showReservations();
+                case 6 -> start = Program.exit();
+                default -> option = 0;
+            }
+            System.out.println();
+        }
     }
 }
