@@ -58,7 +58,7 @@ public class ReservationController {
         String reservationNote;
         SimpleDateFormat fullDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         fullDateFormat.setLenient(false);
-        Date startDate = null, endDate = null;
+        Date startDate, endDate;
         LocalDate today = java.time.LocalDate.now();
 
         while (true) {
@@ -123,12 +123,12 @@ public class ReservationController {
         return date;
     }
 
-    public int update() {
+    public int updateReservation() {
         int reservationId;
         Reservations reservation;
         SimpleDateFormat fullDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         fullDateFormat.setLenient(false);
-        Date startDate = null, endDate = null;
+        Date startDate, endDate;
         LocalDate today = java.time.LocalDate.now();
 
         while (true) {
@@ -171,7 +171,7 @@ public class ReservationController {
                 endDate = promptForDate("Change an end date (yyyy-MM-dd): ", "Starting date: ", fullDateFormat, startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 
                 reservation = new Reservations(1, reservation.getNote(), startDate, endDate, reservation.getRoomId());
-                this.reservationService.addReservation(reservation);
+                this.reservationService.updateReservation(reservation);
                 return 0;
             }
 
@@ -179,7 +179,7 @@ public class ReservationController {
         }
     }
 
-    public int delete() {
+    public int cancelReservation() {
         long reservationId;
         String userConfirmation;
         Reservations reservation;
