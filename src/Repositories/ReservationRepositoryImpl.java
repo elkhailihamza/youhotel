@@ -31,7 +31,7 @@ public class ReservationRepositoryImpl implements ReservationRepository {
 
     @Override
     public Reservations findById(long id) {
-        String sql = "SELECT * FROM reservations WHERE rooms.room_id = ?;";
+        String sql = "SELECT * FROM reservations WHERE reservations.reservation_id = ?;";
         Reservations reservation = null;
         try (PreparedStatement stmt = connectionInstance.prepareStatement(sql)) {
             stmt.setLong(1, id);
@@ -95,7 +95,7 @@ public class ReservationRepositoryImpl implements ReservationRepository {
     @Override
     public void deleteReservation(long id) {
         try {
-            String sql = "DELETE FROM ONLY ( reservations ) WHERE reservations.reservations.id = ?;";
+            String sql = "DELETE FROM reservations WHERE reservations.reservation_id = ?;";
             try (PreparedStatement stmt = connectionInstance.prepareStatement(sql)) {
                 stmt.setLong(1, id);
                 int rowUpdated = stmt.executeUpdate();

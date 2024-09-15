@@ -35,6 +35,10 @@ public class ReservationService {
 
     public boolean checkIfExists(long id) {
         Reservations reservation = this.findById(id);
-        return Objects.equals(reservation, null);
+        return !Objects.equals(reservation, null);
     }
+
+    //public boolean checkIfAlreadyReserved(long user_id, long room_id) {
+    //    Reservations reservations
+    //}
 }

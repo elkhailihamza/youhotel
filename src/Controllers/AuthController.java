@@ -22,6 +22,12 @@ public class AuthController {
             System.out.println("1. Register new user");
             System.out.println("2. Login");
             System.out.println("-");
+
+            if (!this.scanner.hasNextInt()) {
+                Program.clearInputBuffer(this.scanner);
+                continue;
+            }
+
             int choice = this.scanner.nextInt();
 
             Program.clearInputBuffer(this.scanner);

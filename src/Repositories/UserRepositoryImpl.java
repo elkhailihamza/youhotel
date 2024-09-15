@@ -58,9 +58,6 @@ public class UserRepositoryImpl implements UserRepository {
         } catch (SQLException e) {
             System.out.println("User err: " + e);
         }
-        System.out.println(user.getUserId());
-        System.out.println(user.getUserName());
-        System.out.println(user.getUserPass());
         return user;
     }
 

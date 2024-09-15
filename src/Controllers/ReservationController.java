@@ -25,12 +25,8 @@ public class ReservationController {
         this.scanner = Program.getScannerInstance();
     }
 
-    private void printReservationDetails(Reservations reservation) {
-        System.out.println(reservation.getId() + "). " + reservation.getNote() + " / On:" + reservation.getStartDate() + " Ends:" + reservation.getEndDate() + " / Room id:" + reservation.getRoomId());
-    }
-
-    private void checkUserChosenDates() {
-
+    private void printReservationDetails(Reservations reservation, int iterations) {
+        System.out.println(iterations + "). Id: (" + reservation.getId() + ") - " + reservation.getNote() + " / On:" + reservation.getStartDate() + " Ends:" + reservation.getEndDate() + " / Room id:" + reservation.getRoomId());
     }
 
     public int showById(long id) {
@@ -38,18 +34,21 @@ public class ReservationController {
         if (reservation == null) {
             System.out.println("Reservation not found!");
         } else {
-            printReservationDetails(reservation);
+            this.printReservationDetails(reservation, 1);
         }
         return 0;
     }
 
     public int showReservations() {
         List<Reservations> reservationsList = this.reservationService.fetchAll();
+        int i = 1;
         if (reservationsList.isEmpty()) {
             System.out.println("No Reservations can be found!");
         } else {
-            for (Reservations r : reservationsList)
-                this.printReservationDetails(r);
+            for (Reservations r : reservationsList) {
+                this.printReservationDetails(r, i);
+                i++;
+            }
         }
         return 0;
     }
@@ -87,17 +86,8 @@ public class ReservationController {
                 System.out.println("***WARNING*** : Note needs to be at least 3 characters long!");
         } while (reservationNote.length() < 3);
 
-        startDate = promptForDate("Enter a starting date (yyyy-MM-dd): ", fullDateFormat, today, "Today is:");
-
-        while(true) {
-            endDate = promptForDate("Enter an end date (yyyy-MM-dd): ", fullDateFormat, startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), "Starting date: ");
-            if (endDate.before(startDate)) {
-                System.out.println();
-                System.out.println("***WARNING*** : End date can't be before starting date!");
-            } else {
-                break;
-            }
-        }
+        startDate = promptForDate("Enter a starting date (yyyy-MM-dd): ", "Today is:", fullDateFormat, today);
+        endDate = promptForDate("Enter an end date (yyyy-MM-dd): ", "Starting date: ", fullDateFormat, startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 
         Reservations reservation = new Reservations(1, reservationNote, startDate, endDate, roomId);
         this.reservationService.addReservation(reservation);
@@ -105,13 +95,13 @@ public class ReservationController {
         return 0;
     }
 
-    private Date promptForDate(String prompt, SimpleDateFormat dateFormat, LocalDate dateToCompareTo, String showDateToCompareTo) {
+    private Date promptForDate(String firstPrompt, String secondPrompt, SimpleDateFormat dateFormat, LocalDate dateToCompareTo) {
         Date date = null;
         String input, confirmation;
 
         do {
-            System.out.println(showDateToCompareTo+" "+dateToCompareTo);
-            System.out.println(prompt);
+            System.out.println(secondPrompt + " " + dateToCompareTo);
+            System.out.println(firstPrompt);
             input = this.scanner.nextLine();
             try {
                 date = dateFormat.parse(input);
@@ -121,7 +111,7 @@ public class ReservationController {
                     continue;
                 }
                 System.out.println();
-                System.out.println("Date: "+date);
+                System.out.println("Date: " + date);
                 System.out.println("Are you sure? (y/n):");
                 confirmation = this.scanner.nextLine();
                 if (confirmation.equalsIgnoreCase("n")) date = null;
@@ -136,13 +126,17 @@ public class ReservationController {
     public int update() {
         int reservationId;
         Reservations reservation;
+        SimpleDateFormat fullDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        fullDateFormat.setLenient(false);
+        Date startDate = null, endDate = null;
+        LocalDate today = java.time.LocalDate.now();
 
         while (true) {
             System.out.println(" Type reservation id: ");
             System.out.println("0. Back to main menu ");
 
             if (!this.scanner.hasNextLong()) {
-                System.out.println("Invalid reservation id. Please input a valid reservation id:");
+                System.out.println("***WARNING*** : Invalid reservation id. Please input a valid reservation id:");
                 this.scanner.next();
                 continue;
             }
@@ -165,23 +159,60 @@ public class ReservationController {
                         break;
                     else if (result.equals("0"))
                         return 0;
-                    else
-                        reservation.setNote(result);
+                    reservation.setNote(result);
 
                     System.out.println("New Note: " + reservation.getNote());
                 } while (true);
 
-                do {
-                    System.out.println("Old start date: " + reservation.getStartDate());
-                    System.out.println("Old end date: " + reservation.getEndDate());
-                    System.out.println("Change starting date: ");
-                    break;
-                } while (true);
+                System.out.println("Old start date: " + reservation.getStartDate());
+                System.out.println("Old end date: " + reservation.getEndDate());
 
+                startDate = promptForDate("Change starting date (yyyy-MM-dd): ", "Today is:", fullDateFormat, today);
+                endDate = promptForDate("Change an end date (yyyy-MM-dd): ", "Starting date: ", fullDateFormat, startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+
+                reservation = new Reservations(1, reservation.getNote(), startDate, endDate, reservation.getRoomId());
+                this.reservationService.addReservation(reservation);
                 return 0;
             }
 
-            System.out.println("Invalid room id. Try again");
+            System.out.println("***WARNING*** : Invalid room id. Try again");
         }
+    }
+
+    public int delete() {
+        long reservationId;
+        String userConfirmation;
+        Reservations reservation;
+
+        while (true) {
+            System.out.println("Select reservation id: ");
+            System.out.println("0. Back to main menu");
+
+            if (!this.scanner.hasNextLong()) {
+                System.out.println("***WARNING*** : Invalid reservation id. Please input a valid reservation id:");
+                Program.clearInputBuffer(this.scanner);
+                continue;
+            }
+
+            reservationId = this.scanner.nextLong();
+            Program.clearInputBuffer(this.scanner);
+
+            if (reservationId == 0) return 0;
+            if (this.reservationService.checkIfExists(reservationId)) {
+                reservation = this.reservationService.findById(reservationId);
+                do {
+                    this.printReservationDetails(reservation, 1);
+                    System.out.println(" Are you sure? (y,n)");
+                    userConfirmation = this.scanner.nextLine().trim();
+                } while (!userConfirmation.equalsIgnoreCase("Y") && !userConfirmation.equalsIgnoreCase("N"));
+
+                if (userConfirmation.equalsIgnoreCase("Y"))
+                    this.reservationService.deleteRoom(reservation.getId());
+                break;
+            } else {
+                System.out.println("***WARNING*** : Selected Reservation doesn't exist!");
+            }
+        }
+        return 0;
     }
 }

@@ -26,8 +26,8 @@ public class Main {
                     case 0 -> option = Menu.mainMenu();
                     case 1 -> option = roomController.showAll();
                     case 2 -> option = reservationController.addReservation();
-                    // case 3 -> option = reservationController.update();
-                    // case 4 -> option = reservationController.delete();
+                    case 3 -> option = reservationController.update();
+                    case 4 -> option = reservationController.delete();
                     case 5 -> option = reservationController.showReservations();
                     case 6 -> start = Program.exit();
                     default -> option = 0;
