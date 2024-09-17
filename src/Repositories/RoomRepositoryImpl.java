@@ -24,6 +24,7 @@ public class RoomRepositoryImpl implements RoomRepository {
         return new Rooms(room_id, room_number, room_price, status_id, status_name, category_id, category_name);
     }
 
+    @Override
     public Rooms findById(long id) {
         Rooms room = null;
 
@@ -48,6 +49,7 @@ public class RoomRepositoryImpl implements RoomRepository {
         return room;
     }
 
+    @Override
     public HashMap<Long, Rooms> fetchAll() {
         HashMap<Long, Rooms> rooms = new HashMap<>();
 

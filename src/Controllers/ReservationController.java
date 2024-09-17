@@ -3,6 +3,7 @@ package Controllers;
 import Core.Program;
 import Core.Repository;
 import Models.Reservations;
+import Services.AuthService;
 import Services.ReservationService;
 import Services.RoomService;
 
@@ -32,18 +33,36 @@ public class ReservationController {
     public int showById(long id) {
         Reservations reservation = this.reservationService.findById(id);
         if (reservation == null) {
-            System.out.println("Reservation not found!");
+            Program.giveWarning("Reservation not found!");
         } else {
             this.printReservationDetails(reservation, 1);
         }
         return 0;
     }
 
+    private boolean reservationCheck(long user_id, long room_id) {
+        if (!this.roomService.checkIfExists(room_id)) {
+            Program.giveWarning("Room doesn't exist!");
+            return true;
+        }
+        if (this.reservationService.checkIfAlreadyReserved(user_id, room_id)) {
+            Program.giveWarning("You have already reserved this room!");
+            return true;
+        }
+        if (roomService.checkStatus(room_id, "Occupied") || roomService.checkStatus(room_id, "Maintenance")) {
+            Program.giveWarning("This room is either occupied or under maintenance!");
+            return true;
+        }
+        return false;
+    }
+
     public int showReservations() {
-        List<Reservations> reservationsList = this.reservationService.fetchAll();
+        long user_id = AuthService.getCurrentUserId();
+
+        List<Reservations> reservationsList = this.reservationService.fetchAll(user_id);
         int i = 1;
         if (reservationsList.isEmpty()) {
-            System.out.println("No Reservations can be found!");
+            Program.giveWarning("No Reservations can be found!");
         } else {
             for (Reservations r : reservationsList) {
                 this.printReservationDetails(r, i);
@@ -60,36 +79,36 @@ public class ReservationController {
         fullDateFormat.setLenient(false);
         Date startDate, endDate;
         LocalDate today = java.time.LocalDate.now();
+        long user_id = AuthService.getCurrentUserId();
 
         while (true) {
             System.out.println("Type Room id: ");
             System.out.println("0). back to main menu ");
             if (!this.scanner.hasNextLong()) {
-                System.out.println("***WARNING*** : Invalid room id. Please input a valid room id:");
+                Program.giveWarning("Invalid room id. Please input a valid room id:");
                 this.scanner.next();
                 continue;
             }
             roomId = this.scanner.nextLong();
             if (roomId == 0) return 0;
-            if (!this.roomService.checkIfExists(roomId) || this.roomService.checkStatus(roomId, "Occupied")) {
-                System.out.println("***WARNING*** : Room doesn't exist or is already reserved!");
+            if (this.reservationCheck(user_id, roomId))
                 continue;
-            }
             break;
         }
+
         Program.clearInputBuffer(this.scanner);
 
         do {
             System.out.println("Include a note (3 characters or more): ");
             reservationNote = this.scanner.nextLine();
             if (reservationNote.length() < 3)
-                System.out.println("***WARNING*** : Note needs to be at least 3 characters long!");
+                Program.giveWarning("Note needs to be at least 3 characters long!");
         } while (reservationNote.length() < 3);
 
         startDate = promptForDate("Enter a starting date (yyyy-MM-dd): ", "Today is:", fullDateFormat, today);
         endDate = promptForDate("Enter an end date (yyyy-MM-dd): ", "Starting date: ", fullDateFormat, startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 
-        Reservations reservation = new Reservations(1, reservationNote, startDate, endDate, roomId);
+        Reservations reservation = new Reservations(1, reservationNote, startDate, endDate, roomId, user_id);
         this.reservationService.addReservation(reservation);
 
         return 0;
@@ -107,7 +126,8 @@ public class ReservationController {
                 date = dateFormat.parse(input);
                 if (date.before(Date.from(dateToCompareTo.atStartOfDay(ZoneId.systemDefault()).toInstant()))) {
                     date = null;
-                    System.out.println("***WARNING*** : Chosen date can't be before, " + dateToCompareTo);
+                    Program.giveWarning("Chosen date can't be before, ");
+                    System.out.print(dateToCompareTo);
                     continue;
                 }
                 System.out.println();
@@ -116,7 +136,7 @@ public class ReservationController {
                 confirmation = this.scanner.nextLine();
                 if (confirmation.equalsIgnoreCase("n")) date = null;
             } catch (ParseException e) {
-                System.out.println("***WARNING*** : Invalid date format. Please try again.");
+                Program.giveWarning("Invalid date format. Please try again.");
             }
         } while (date == null);
 
@@ -130,13 +150,14 @@ public class ReservationController {
         fullDateFormat.setLenient(false);
         Date startDate, endDate;
         LocalDate today = java.time.LocalDate.now();
+        long user_id = AuthService.getCurrentUserId();
 
         while (true) {
             System.out.println(" Type reservation id: ");
             System.out.println("0. Back to main menu ");
 
             if (!this.scanner.hasNextLong()) {
-                System.out.println("***WARNING*** : Invalid reservation id. Please input a valid reservation id:");
+                Program.giveWarning("Invalid reservation id. Please input a valid reservation id:");
                 this.scanner.next();
                 continue;
             }
@@ -170,12 +191,12 @@ public class ReservationController {
                 startDate = promptForDate("Change starting date (yyyy-MM-dd): ", "Today is:", fullDateFormat, today);
                 endDate = promptForDate("Change an end date (yyyy-MM-dd): ", "Starting date: ", fullDateFormat, startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 
-                reservation = new Reservations(1, reservation.getNote(), startDate, endDate, reservation.getRoomId());
+                reservation = new Reservations(1, reservation.getNote(), startDate, endDate, reservation.getRoomId(), user_id);
                 this.reservationService.updateReservation(reservation);
                 return 0;
             }
 
-            System.out.println("***WARNING*** : Invalid room id. Try again");
+            Program.giveWarning("Invalid room id. Try again");
         }
     }
 
@@ -189,7 +210,7 @@ public class ReservationController {
             System.out.println("0. Back to main menu");
 
             if (!this.scanner.hasNextLong()) {
-                System.out.println("***WARNING*** : Invalid reservation id. Please input a valid reservation id:");
+                Program.giveWarning("Invalid reservation id. Please input a valid reservation id:");
                 Program.clearInputBuffer(this.scanner);
                 continue;
             }
@@ -210,7 +231,7 @@ public class ReservationController {
                     this.reservationService.deleteRoom(reservation.getId());
                 break;
             } else {
-                System.out.println("***WARNING*** : Selected Reservation doesn't exist!");
+                Program.giveWarning("Selected Reservation doesn't exist!");
             }
         }
         return 0;

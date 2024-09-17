@@ -9,14 +9,16 @@ public class Reservations {
     private Date start_date;
     private Date end_date;
     private long room_id;
+    private long user_id;
 
 
-    public Reservations(long id, String note, Date start_date, Date end_date, long room_id) {
+    public Reservations(long id, String note, Date start_date, Date end_date, long room_id, long user_id) {
         this.id = id;
         this.start_date = start_date;
         this.end_date = end_date;
         this.note = note;
         this.room_id = room_id;
+        this.user_id = user_id;
     }
 
     public long getId() {
@@ -53,5 +55,13 @@ public class Reservations {
 
     public void setRoomId(long room_id) {
         this.room_id = room_id;
+    }
+
+    public long getUserId() {
+        return this.user_id;
+    }
+
+    public void setUserId(long user_id) {
+        this.user_id = user_id;
     }
 }

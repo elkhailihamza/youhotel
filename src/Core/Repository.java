@@ -19,14 +19,17 @@ public class Repository {
     public Repository() {
         Connection connectionInstance = DB_Connection.getConnection();
 
+        UserRepositoryImpl UserRepository = new UserRepositoryImpl(connectionInstance);
         ReservationRepositoryImpl ReservationRepository = new ReservationRepositoryImpl(connectionInstance);
         RoomRepositoryImpl RoomRepository = new RoomRepositoryImpl(connectionInstance);
-        UserRepositoryImpl UserRepository = new UserRepositoryImpl(connectionInstance);
 
+        this.AuthService = new AuthService(UserRepository);
         this.ReservationService = new ReservationService(ReservationRepository);
         this.RoomService = new RoomService(RoomRepository);
-        this.AuthService = new AuthService(UserRepository);
 
+    }
+    public AuthService getAuthService() {
+        return this.AuthService;
     }
 
     public ReservationService getReservationService() {
@@ -35,9 +38,5 @@ public class Repository {
 
     public RoomService getRoomService() {
         return this.RoomService;
-    }
-
-    public AuthService getAuthService() {
-        return this.AuthService;
     }
 }

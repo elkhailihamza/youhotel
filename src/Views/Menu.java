@@ -10,7 +10,8 @@ public class Menu {
         System.out.println("3. Edit past reservations");
         System.out.println("4. Cancel a reservation");
         System.out.println("5. View Reservation History");
-        System.out.println("6. Quit");
+        System.out.println("6. View Statistics");
+        System.out.println("7. Quit");
 
         int userInput;
         if (Program.getScannerInstance().hasNextInt()){

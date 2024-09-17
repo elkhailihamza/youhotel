@@ -28,6 +28,10 @@ public class Program {
         return (true);
     }
 
+    public static void giveWarning(String warning) {
+        System.out.println("***WARNING*** : "+warning);
+    }
+
     public static boolean exit() {
         System.out.println("Bye");
         return false;
