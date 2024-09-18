@@ -68,7 +68,7 @@ public class ReservationRepositoryImpl implements ReservationRepository {
 
     @Override
     public void addReservation(Reservations reservation) {
-        String sql = "INSERT INTO reservations (reservation_note, reservation_start_date, reservation_end_date, room_id) VALUES (?, ?, ?, ?);";
+        String sql = "INSERT INTO reservations (reservation_note, reservation_start_date, reservation_end_date, room_id, user_id) VALUES (?, ?, ?, ?, ?);";
 
         try (PreparedStatement stmt = connectionInstance.prepareStatement(sql)) {
             this.setResultsToReservation(stmt, reservation);
