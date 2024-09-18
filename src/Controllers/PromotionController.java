@@ -29,15 +29,19 @@ public class PromotionController {
         if (this.promotionService.checkIfPromoDay(date)) {
             System.out.println("Today is not a special day :(");
             for (Rooms r : rooms.values()) {
-                r.setPrice(r.getBasePrice());
-                this.roomService.updateRoomPrice(r);
+                if (r.getPrice() < r.getBasePrice()) {
+                    r.setPrice(r.getBasePrice());
+                    this.roomService.updateRoomPrice(r);
+                }
             }
         } else {
             promotion = this.promotionService.fetchPromotionDate(date);
             for (Rooms r : rooms.values()) {
-                double updatedPrice = r.getPrice() * (1 - (promotion.getPromotionDiscountPercentage() / 100.0));
-                r.setPrice(updatedPrice);
-                this.roomService.updateRoomPrice(r);
+                double updatedPrice = r.getBasePrice() * (1 - (promotion.getPromotionDiscountPercentage() / 100.0));
+                if (r.getPrice() != updatedPrice) {
+                    r.setPrice(updatedPrice);
+                    this.roomService.updateRoomPrice(r);
+                }
             }
         }
     }
