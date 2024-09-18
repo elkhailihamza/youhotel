@@ -5,15 +5,17 @@ public class Rooms {
     private final Long id;
     private String roomNumber;
     private double price;
+    private double base_price;
     private long status_id;
     private String status_name;
     private long category_id;
     private String category_name;
 
-    public Rooms(Long id, String roomNumber, double price, long status_id, String status_name, long category_id, String category_name) {
+    public Rooms(Long id, String roomNumber, double price, double base_price, long status_id, String status_name, long category_id, String category_name) {
         this.id = id;
         this.roomNumber = roomNumber;
         this.price = price;
+        this.base_price = base_price;
         this.status_id = status_id;
         this.status_name = status_name;
         this.category_id = category_id;
@@ -38,6 +40,14 @@ public class Rooms {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public double getBasePrice() {
+        return this.base_price;
+    }
+
+    public void setBasePrice(double basePrice) {
+        this.base_price = basePrice;
     }
 
     public long getCategoryId() {

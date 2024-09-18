@@ -20,6 +20,10 @@ public class RoomService {
         return RoomRepository.fetchAll();
     }
 
+    public void updateRoomPrice(Rooms room) {
+        RoomRepository.updateRoomPrice(room);
+    }
+
     public boolean checkIfExists(long id) {
         Rooms room = this.findById(id);
         return !Objects.equals(room, null);

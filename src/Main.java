@@ -1,18 +1,11 @@
-import Controllers.AuthController;
-import Controllers.ReservationController;
-import Controllers.RoomController;
-import Controllers.StatisticsController;
+import Controllers.*;
 import Core.Program;
 import Core.Repository;
-import Models.Users;
-import Services.AuthService;
 import Views.Menu;
-
-import java.util.HashMap;
 
 public class Main {
     public static void main(String[] args) {
-        boolean loggedIn = false;
+        boolean loggedIn;
         boolean start = true;
         int option = 0;
 
@@ -21,12 +14,14 @@ public class Main {
         ReservationController reservationController = new ReservationController(repository);
         RoomController roomController = new RoomController(repository);
         StatisticsController statisticsController = new StatisticsController(repository);
+        PromotionController promotionController = new PromotionController(repository);
 
         loggedIn = authController.showMenu();
 
         if (loggedIn) {
             System.out.println();
             System.out.println("Welcome!");
+            promotionController.reducePricesDependingOnPromoDay();
             while (start) {
                 switch (option) {
                     case 0 -> option = Menu.mainMenu();

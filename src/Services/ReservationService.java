@@ -1,7 +1,6 @@
 package Services;
 
 import Models.Reservations;
-import Models.Rooms;
 import Repositories.ReservationRepository;
 
 import java.util.List;

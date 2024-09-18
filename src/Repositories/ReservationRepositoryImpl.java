@@ -18,6 +18,7 @@ public class ReservationRepositoryImpl implements ReservationRepository {
         stmt.setDate(2, new java.sql.Date(reservation.getStartDate().getTime()));
         stmt.setDate(3, new java.sql.Date(reservation.getEndDate().getTime()));
         stmt.setLong(4, reservation.getRoomId());
+        stmt.setLong(5, reservation.getId());
     }
 
     private Reservations insertResultsIntoReservation(ResultSet rs) throws SQLException {
@@ -82,7 +83,7 @@ public class ReservationRepositoryImpl implements ReservationRepository {
     @Override
     public void updateReservation(Reservations reservation) {
         try {
-            String sql = "UPDATE reservations SET reservation_note = ?, reservation_start_date = ?, reservation_end_date = ?, room_id = ?;";
+            String sql = "UPDATE reservations SET reservation_note = ?, reservation_start_date = ?, reservation_end_date = ?, room_id = ? WHERE reservations.reservation_id = ?;";
             try (PreparedStatement stmt = connectionInstance.prepareStatement(sql)) {
                 this.setResultsToReservation(stmt, reservation);
                 int rowUpdated = stmt.executeUpdate();
